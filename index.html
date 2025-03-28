@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ROI Calculator</title>
+  <style>
+    :root {
+      --accent: #1559db;
+      --bg-dark: #111;
+      --text-light: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f8f8;
+      color: #333;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1100px;
+      margin: auto;
+      gap: 30px;
+    }
+
+    .left, .right {
+      flex: 1 1 400px;
+      padding: 40px;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .left p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .slider-value {
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .slider-container {
+      margin: 20px 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      appearance: none;
+      height: 6px;
+      background: #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 14px;
+      padding: 0 4px;
+    }
+
+    .rate-box {
+      background: #eee;
+      font-weight: bold;
+      padding: 15px 20px;
+      font-size: 20px;
+      display: inline-block;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .right {
+      background: var(--bg-dark);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .right h2 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    .big-amount {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    .cta-button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      font-size: 18px;
+      padding: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .summary {
+      font-size: 15px;
+    }
+
+    .summary div {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #444;
+      margin: 15px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .left, .right {
+        flex: 1 1 100%;
+      }
+      .big-amount {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Left Column -->
+    <div class="left">
+      <p>Choose the plan that suits your needs. Each plan saves you time and money every month.</p>
+
+      <div class="slider-value" id="planLabel">Trial (10 hours)</div>
+
+      <div class="slider-container">
+        <input type="range" min="1" max="4" value="1" id="planSlider" oninput="updatePlan()" />
+        <div class="slider-labels">
+          <span>Trial</span>
+          <span>Standard</span>
+          <span>Advanced</span>
+          <span>Growth</span>
+        </div>
+      </div>
+
+      <p>Your estimated monthly savings based on plan:</p>
+      <div class="rate-box" id="savingValue">$30 /month</div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right">
+      <div>
+        <h2>Return on Investment<br>Every Month</h2>
+        <div class="big-amount" id="totalROI">$30</div>
+        <button class="cta-button">Get Started</button>
+
+        <div class="summary">
+          <div><span>Plan Type</span><span id="planName">Trial</span></div>
+          <div><span>Hours saved per month</span><span id="hoursPerMonth">10</span></div>
+          <div><span>Subscription cost</span><span>$0</span></div>
+          <hr />
+          <div style="font-weight: bold;"><span>Total ROI per month</span><span id="roiCalc">$30</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const plans = {
+      1: { name: "Trial", hours: 10, savings: 30 },
+      2: { name: "Standard", hours: 20, savings: 50 },
+      3: { name: "Advanced", hours: 35, savings: 70 },
+      4: { name: "Growth", hours: 50, savings: 100 }
+    };
+
+    let currentAmount = 30; // default
+
+    function animateNumber(from, to, duration, element) {
+      const start = performance.now();
+      function step(timestamp) {
+        const progress = Math.min((timestamp - start) / duration, 1);
+        const value = Math.floor(from + (to - from) * progress);
+        element.textContent = `$${value}`;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function updatePlan() {
+      const slider = document.getElementById('planSlider');
+      const value = parseInt(slider.value);
+      const plan = plans[value];
+
+      document.getElementById('planLabel').textContent = `${plan.name} (${plan.hours} hours)`;
+      document.getElementById('savingValue').textContent = `$${plan.savings} /month`;
+      document.getElementById('planName').textContent = plan.name;
+      document.getElementById('hoursPerMonth').textContent = `${plan.hours}`;
+      document.getElementById('roiCalc').textContent = `$${plan.savings}`;
+
+      const roiEl = document.getElementById('totalROI');
+      animateNumber(currentAmount, plan.savings, 800, roiEl);
+      currentAmount = plan.savings;
+    }
+
+    updatePlan();
+  </script>
+</body>
+</html>
