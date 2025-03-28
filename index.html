@@ -6,32 +6,22 @@
   <title>ROI Calculator</title>
   <style>
     :root {
-      --accent: #1559db;
-      --bg-dark: #111;
-      --text-light: #fff;
+      --roi-accent: #1559db;
+      --roi-bg-dark: #111;
+      --roi-text-light: #fff;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f8f8f8;
-      color: #333;
-    }
-
-    .container {
+    .roi-container {
       display: flex;
       flex-wrap: wrap;
       max-width: 1100px;
       margin: auto;
       gap: 30px;
+      font-family: Arial, sans-serif;
+      color: #333;
     }
 
-    .left, .right {
+    .roi-left, .roi-right {
       flex: 1 1 400px;
       padding: 40px;
       border-radius: 16px;
@@ -39,29 +29,29 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
 
-    .left {
+    .roi-left {
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    .left p {
+    .roi-left p {
       font-size: 16px;
       margin-bottom: 20px;
     }
 
-    .slider-value {
+    .roi-slider-value {
       font-size: 28px;
       font-weight: bold;
       text-align: center;
       margin-bottom: 20px;
     }
 
-    .slider-container {
+    .roi-slider-container {
       margin: 20px 0;
     }
 
-    input[type="range"] {
+    .roi-slider {
       width: 100%;
       appearance: none;
       height: 6px;
@@ -70,16 +60,16 @@
       outline: none;
     }
 
-    input[type="range"]::-webkit-slider-thumb {
+    .roi-slider::-webkit-slider-thumb {
       appearance: none;
       width: 18px;
       height: 18px;
-      background: var(--accent);
+      background: var(--roi-accent);
       border-radius: 50%;
       cursor: pointer;
     }
 
-    .slider-labels {
+    .roi-slider-labels {
       display: flex;
       justify-content: space-between;
       margin-top: 10px;
@@ -87,7 +77,7 @@
       padding: 0 4px;
     }
 
-    .rate-box {
+    .roi-rate-box {
       background: #eee;
       font-weight: bold;
       padding: 15px 20px;
@@ -97,27 +87,27 @@
       margin-top: 15px;
     }
 
-    .right {
-      background: var(--bg-dark);
-      color: var(--text-light);
+    .roi-right {
+      background: var(--roi-bg-dark);
+      color: var(--roi-text-light);
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    .right h2 {
+    .roi-right h2 {
       margin-top: 0;
       font-size: 22px;
     }
 
-    .big-amount {
+    .roi-big-amount {
       font-size: 48px;
       font-weight: bold;
       margin: 20px 0;
     }
 
-    .cta-button {
-      background: var(--accent);
+    .roi-cta-button {
+      background: var(--roi-accent);
       color: #fff;
       border: none;
       font-size: 18px;
@@ -127,46 +117,46 @@
       margin-bottom: 20px;
     }
 
-    .summary {
+    .roi-summary {
       font-size: 15px;
     }
 
-    .summary div {
+    .roi-summary div {
       display: flex;
       justify-content: space-between;
       padding: 6px 0;
     }
 
-    hr {
+    .roi-divider {
       border: none;
       border-top: 1px solid #444;
       margin: 15px 0;
     }
 
     @media (max-width: 768px) {
-      .container {
+      .roi-container {
         flex-direction: column;
       }
-      .left, .right {
+      .roi-left, .roi-right {
         flex: 1 1 100%;
       }
-      .big-amount {
+      .roi-big-amount {
         font-size: 36px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="roi-container">
     <!-- Left Column -->
-    <div class="left">
+    <div class="roi-left">
       <p>Choose the plan that suits your needs. Each plan saves you time and money every month.</p>
 
-      <div class="slider-value" id="planLabel">Trial (10 hours)</div>
+      <div class="roi-slider-value" id="roi-planLabel">Trial (10 hours)</div>
 
-      <div class="slider-container">
-        <input type="range" min="1" max="4" value="1" id="planSlider" oninput="updatePlan()" />
-        <div class="slider-labels">
+      <div class="roi-slider-container">
+        <input type="range" min="1" max="4" value="1" id="roi-planSlider" class="roi-slider" oninput="roiUpdatePlan()" />
+        <div class="roi-slider-labels">
           <span>Trial</span>
           <span>Standard</span>
           <span>Advanced</span>
@@ -175,38 +165,62 @@
       </div>
 
       <p>Your estimated monthly savings based on plan:</p>
-      <div class="rate-box" id="savingValue">$30 /month</div>
+      <div class="roi-rate-box" id="roi-savingValue">$30 /month</div>
     </div>
 
     <!-- Right Column -->
-    <div class="right">
+    <div class="roi-right">
       <div>
         <h2>Return on Investment<br>Every Month</h2>
-        <div class="big-amount" id="totalROI">$30</div>
-        <button class="cta-button">Get Started</button>
+        <div class="roi-big-amount" id="roi-totalROI">$30</div>
+        <button class="roi-cta-button" id="roi-btn">Get Started</button>
 
-        <div class="summary">
-          <div><span>Plan Type</span><span id="planName">Trial</span></div>
-          <div><span>Hours saved per month</span><span id="hoursPerMonth">10</span></div>
-          <div><span>Subscription cost</span><span>$0</span></div>
-          <hr />
-          <div style="font-weight: bold;"><span>Total ROI per month</span><span id="roiCalc">$30</span></div>
+        <div class="roi-summary">
+          <div><span>Plan Type</span><span id="roi-planName">Trial</span></div>
+          <div><span>Hours saved per month</span><span id="roi-hoursPerMonth">10</span></div>
+          <div><span>Subscription cost</span><span id="roi-subscriptionCost">$99</span></div>
+          <hr class="roi-divider" />
+          <div style="font-weight: bold;"><span>Total ROI per month</span><span id="roi-roiCalc">$30</span></div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const plans = {
-      1: { name: "Trial", hours: 10, savings: 30 },
-      2: { name: "Standard", hours: 20, savings: 50 },
-      3: { name: "Advanced", hours: 35, savings: 70 },
-      4: { name: "Growth", hours: 50, savings: 100 }
+    const roiPlans = {
+      1: {
+        name: "Trial",
+        hours: 10,
+        savings: 30,
+        cost: 99,
+        link: "https://payments.pabbly.com/subscribe/642a4e3dffc53777866d2278/trial"
+      },
+      2: {
+        name: "Standard",
+        hours: 20,
+        savings: 50,
+        cost: 199,
+        link: "https://payments.pabbly.com/subscribe/668e4af061b040a9e37556d4/standard"
+      },
+      3: {
+        name: "Advanced",
+        hours: 35,
+        savings: 70,
+        cost: 349,
+        link: "https://payments.pabbly.com/subscribe/668e4b9afb426e194280315a/advanced"
+      },
+      4: {
+        name: "Growth",
+        hours: 50,
+        savings: 100,
+        cost: 500,
+        link: "https://payments.pabbly.com/subscribe/65af891fa49eea0f6af8d190/growth"
+      }
     };
 
-    let currentAmount = 30; // default
+    let roiCurrentAmount = 30;
 
-    function animateNumber(from, to, duration, element) {
+    function roiAnimateNumber(from, to, duration, element) {
       const start = performance.now();
       function step(timestamp) {
         const progress = Math.min((timestamp - start) / duration, 1);
@@ -217,23 +231,27 @@
       requestAnimationFrame(step);
     }
 
-    function updatePlan() {
-      const slider = document.getElementById('planSlider');
+    function roiUpdatePlan() {
+      const slider = document.getElementById('roi-planSlider');
       const value = parseInt(slider.value);
-      const plan = plans[value];
+      const plan = roiPlans[value];
 
-      document.getElementById('planLabel').textContent = `${plan.name} (${plan.hours} hours)`;
-      document.getElementById('savingValue').textContent = `$${plan.savings} /month`;
-      document.getElementById('planName').textContent = plan.name;
-      document.getElementById('hoursPerMonth').textContent = `${plan.hours}`;
-      document.getElementById('roiCalc').textContent = `$${plan.savings}`;
+      document.getElementById('roi-planLabel').textContent = `${plan.name} (${plan.hours} hours)`;
+      document.getElementById('roi-savingValue').textContent = `$${plan.savings} /month`;
+      document.getElementById('roi-planName').textContent = plan.name;
+      document.getElementById('roi-hoursPerMonth').textContent = `${plan.hours}`;
+      document.getElementById('roi-subscriptionCost').textContent = `$${plan.cost}`;
+      document.getElementById('roi-roiCalc').textContent = `$${plan.savings}`;
 
-      const roiEl = document.getElementById('totalROI');
-      animateNumber(currentAmount, plan.savings, 800, roiEl);
-      currentAmount = plan.savings;
+      const btn = document.getElementById('roi-btn');
+      btn.setAttribute('onclick', `window.location.href='${plan.link}'`);
+
+      const roiEl = document.getElementById('roi-totalROI');
+      roiAnimateNumber(roiCurrentAmount, plan.savings, 800, roiEl);
+      roiCurrentAmount = plan.savings;
     }
 
-    updatePlan();
+    roiUpdatePlan();
   </script>
 </body>
 </html>
