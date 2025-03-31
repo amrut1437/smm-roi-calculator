@@ -288,7 +288,7 @@
       document.getElementById('roi-roiCalc').textContent = `$${totalROI}`;
 
       const btn = document.getElementById('roi-btn');
-      btn.setAttribute('onclick', `window.location.href='${plan.link}'`);
+      btn.setAttribute('onclick', `window.open('${plan.link}', '_blank')`);
 
       const roiEl = document.getElementById('roi-totalROI');
       roiAnimateNumber(roiCurrentAmount, totalROI, 800, roiEl);
