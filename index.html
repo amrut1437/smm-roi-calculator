@@ -133,6 +133,36 @@
       margin: 15px 0;
     }
 
+    /* Apply styles to the dropdown similar to the savings value box */
+    #costPerHour {
+      background: #eee;
+      font-weight: bold;
+      padding: 15px 20px;
+      font-size: 20px;
+      display: inline-block;
+      border-radius: 8px;
+      margin-top: 15px;
+      border: none;
+      width: 100%;
+      appearance: none;
+      color: #333;
+      position: relative;
+    }
+
+    #costPerHour:focus {
+      outline: none;
+      border-color: var(--roi-accent);
+    }
+
+    /* Adding the image icon correctly to the right side of the dropdown */
+    #costPerHour {
+      background-image: url('https://static-00.iconduck.com/assets.00/dropdown-icon-512x258-kkdnop8h.png');
+      background-size: 13px;
+      background-position: right 15px center;
+      background-repeat: no-repeat;
+      padding-right: 40px; /* Add space to make room for the icon */
+    }
+
     @media (max-width: 768px) {
       .roi-container {
         flex-direction: column;
@@ -163,6 +193,14 @@
           <span>Growth</span>
         </div>
       </div>
+
+      <p>Cost per hour:</p>
+      <select id="costPerHour" onchange="roiUpdatePlan()">
+        <option value="30">30</option>
+        <option value="50">50</option>
+        <option value="75">75</option>
+        <option value="100">100</option>
+      </select>
 
       <p>Your estimated monthly savings based on plan:</p>
       <div class="roi-rate-box" id="roi-savingValue">$30 /month</div>
@@ -236,19 +274,25 @@
       const value = parseInt(slider.value);
       const plan = roiPlans[value];
 
+      // Fetch the selected cost per hour from the dropdown
+      const costPerHour = parseInt(document.getElementById('costPerHour').value);
+
+      // Calculate the Return on Investment
+      const totalROI = plan.hours * costPerHour;
+
       document.getElementById('roi-planLabel').textContent = `${plan.name} (${plan.hours} hours)`;
-      document.getElementById('roi-savingValue').textContent = `$${plan.savings} /month`;
+      document.getElementById('roi-savingValue').textContent = `$${totalROI} /month`;
       document.getElementById('roi-planName').textContent = plan.name;
       document.getElementById('roi-hoursPerMonth').textContent = `${plan.hours}`;
       document.getElementById('roi-subscriptionCost').textContent = `$${plan.cost}`;
-      document.getElementById('roi-roiCalc').textContent = `$${plan.savings}`;
+      document.getElementById('roi-roiCalc').textContent = `$${totalROI}`;
 
       const btn = document.getElementById('roi-btn');
       btn.setAttribute('onclick', `window.location.href='${plan.link}'`);
 
       const roiEl = document.getElementById('roi-totalROI');
-      roiAnimateNumber(roiCurrentAmount, plan.savings, 800, roiEl);
-      roiCurrentAmount = plan.savings;
+      roiAnimateNumber(roiCurrentAmount, totalROI, 800, roiEl);
+      roiCurrentAmount = totalROI;
     }
 
     roiUpdatePlan();
